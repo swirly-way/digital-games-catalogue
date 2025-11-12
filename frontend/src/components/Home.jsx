@@ -33,7 +33,7 @@ export default function Home() {
         <SearchBar />
         <div className="flex flex-wrap">
           {games.map((game) => (
-            <GameCard key={game.id} title={game.name} />
+            <GameCard key={game.id} title={game.name} image={game.coverUrl}/>
           ))}
         </div>
       </main>
