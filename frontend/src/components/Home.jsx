@@ -2,14 +2,28 @@ import Header from "../components/Header";
 import SearchBar from "../components/SearchBar";
 import Sidebar from "../components/Sidebar";
 import GameCard from "../components/GameCard";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  const dummyGames = [
-    { title: "Game 1" },
-    { title: "Game 2" },
-    { title: "Game 3" },
-    { title: "Game 4" },
-  ];
+  const [games, setGames] = useState([]);
+    const [error, setError] = useState(null);
+  
+    useEffect(() => {
+      // Fetch from our backend route
+      fetch("http://localhost:5000/api/games")
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then((data) => setGames(data))
+        .catch((err) => setError(err.message));
+    }, []);
+  
+    if (error) {
+      return <p className="text-red-500">Error: {error}</p>;
+    }
 
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-gray-800 text-white">
@@ -18,8 +32,8 @@ export default function Home() {
         <Header />
         <SearchBar />
         <div className="flex flex-wrap">
-          {dummyGames.map((game, index) => (
-            <GameCard key={index} title={game.title} />
+          {games.map((game) => (
+            <GameCard key={game.id} title={game.name} />
           ))}
         </div>
       </main>
