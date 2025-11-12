@@ -1,5 +1,10 @@
 import Home from "./components/Home";
+import GameList from "./components/GameList";
 
 export default function App() {
-  return <Home />;
+  return (
+    <GameList />
+  // <Home />
+
+);
 }
