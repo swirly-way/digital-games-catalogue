@@ -1,4 +1,6 @@
 import axios from "axios";
+import { formatGameData } from "../utils/formatGameData.js";
+
 
 export const getGames = async (req, res) => {
   try {
@@ -37,14 +39,15 @@ limit 200;
 
     //Transform primitive objects and map into arrays of key (id) and value (popularity). Object.fromEntries transforms it into a JS object
     const popularityMap = Object.fromEntries(popularResponse.data.map(p => [p.game_id, p.value]));
-    const finalData = gamesResponse.data.map(g => ({
-      ...g,
-      popularity: popularityMap[g.id] || 0
-    }));
 
-    res.status(200).json(finalData.sort((a,b) => b.popularity - a.popularity));
+
+   const finalData = gamesResponse.data.map(game =>
+  formatGameData(game, popularityMap)
+);
+
+res.status(200).json(finalData);
   } catch (error) {
     console.error("Error fetching games:", error.message);
-    res.status(500).json({ error: "Failed to fetch games from IGDB." });
+    res.status(500).json({ error: "Failed to fetch games from IGDB."});
   }
 };
